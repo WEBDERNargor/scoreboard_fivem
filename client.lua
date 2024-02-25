@@ -1,4 +1,5 @@
 ESX =nil
+Profile=false
 Script=GetCurrentResourceName()
 Open=false
 local Keys = {
@@ -116,4 +117,31 @@ AddEventHandler(Script..":sendplayerdata", function(data)
         data=data
     })
     Open=true;
+end)
+
+
+RegisterNetEvent(Script..":sendplayercount")
+AddEventHandler(Script..":sendplayercount", function(data)
+    SendNUIMessage({
+        action="update",
+        counter=data
+    })
+end)
+CreateThread(function()
+    while true do 
+        Wait(1000)
+        if not Profile then
+      
+    local result = exports["loaf_headshot_base64"]:getBase64(PlayerPedId())
+    if result.success then
+        Profile=true
+        SendNUIMessage({
+            action="profile",
+            img=result.base64
+        })
+    else
+        print("^1Error:^0",result.error)
+    end
+end
+end
 end)
