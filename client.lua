@@ -1,6 +1,8 @@
 ESX =nil
 Script=GetCurrentResourceName()
 Open=false
+Mugshot=nil
+MugshotStr=nil
 local Keys = {
     ["ESC"] = 322,
     ["F1"] = 288,
@@ -98,6 +100,7 @@ if IsControlJustReleased(0,  Keys[Config.Key]) then
     
         })
         Open=false;
+        UnregisterPedheadshot(Mugshot)
     else
       TriggerServerEvent(Script..":getplyerdata")
     end
@@ -111,9 +114,31 @@ end)
 
 RegisterNetEvent(Script..":sendplayerdata")
 AddEventHandler(Script..":sendplayerdata", function(data)
+    Mugshot,MugshotStr = ESX.Game.GetPedMugshot(GetPlayerPed(-1))
+
     SendNUIMessage({
         action="open",
-        data=data
+        data=data,
+        img='https://nui-img/'..MugshotStr..'/'..MugshotStr
     })
     Open=true;
 end)
+
+RegisterNetEvent(Script..":sendPlayerCount")
+AddEventHandler(Script..":sendPlayerCount", function(data)
+    SendNUIMessage({
+        action="update",
+        counter=data.counter,
+        online=data.online
+    })
+end)
+
+
+RegisterNetEvent(Script..":sendjob")
+AddEventHandler(Script..":sendjob", function(job)
+    SendNUIMessage({
+        action="changejob",
+        job=job,
+    })
+end)
+
